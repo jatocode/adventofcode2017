@@ -1,5 +1,5 @@
 # Advent of code 2017
 
-Ville vara med och hjärngympa lite. Javascript via node.js tänkte jag hålla mig till.
+Dags år igen. Javascript pga gillar det och kanske C# pga bra för jobbets skull.
 
 http://adventofcode.com/2017
