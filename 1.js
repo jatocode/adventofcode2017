@@ -16,8 +16,7 @@ read(args[0], function(data) {
         const digits = l.trim().split("");
         var matching = [];
         for(var i=0;i<digits.length;i++) {
-         //   console.log(digits[i] + ' ' + digits[(i + 1) % digits.length]);
-            if(digits[i] == digits[(i+1) % digits.length]) {
+            if(digits[i] == digits[(i+digits.length/2) % digits.length]) {
                 matching.push(parseInt(digits[i]));
             }
         }
