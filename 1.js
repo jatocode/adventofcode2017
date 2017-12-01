@@ -11,6 +11,21 @@ function read(file, callback) {
 }
 
 read(args[0], function(data) {
-
+    var lines = data.split('\n');
+    for(let l of lines) {
+        const digits = l.trim().split("");
+        var matching = [];
+        for(var i=0;i<digits.length;i++) {
+         //   console.log(digits[i] + ' ' + digits[(i + 1) % digits.length]);
+            if(digits[i] == digits[(i+1) % digits.length]) {
+                matching.push(parseInt(digits[i]));
+            }
+        }
+        if(matching.length > 0 ) {
+            console.log(l + ' = ' + matching.reduce((s,d) => { return s + d }));
+        } else {
+            console.log(l + ' = 0');
+        }
+   }
 });
 
