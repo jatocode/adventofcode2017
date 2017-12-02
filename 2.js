@@ -17,14 +17,17 @@ read(args[0], function(data) {
     for(let l of lines) {
         if(l.length == 0) continue;
         var nums = l.split(/\s+/).map((a) => parseInt(a));
+
+        // Part 1
         var currmax = 0;
-        var currmin = 65535;
+        var currmin = Number.MAX_SAFE_INTEGER;
         for(num of nums) {
             currmax = Math.max(num, currmax);
             currmin = Math.min(num, currmin);
         }
         sum = sum + (currmax - currmin);
 
+        // Part 2
         var divisible;
         for(num of nums) {
             for(num2 of nums) {
