@@ -1,15 +1,8 @@
 var fs = require('fs');
 var args = process.argv.slice(2);
 
-/*              31 30
-17  16  15  14  13 30
-18   5   4   3  12 29
-19   6   1   2  11 28
-20   7   8   9  10 27
-21  22  23  24  25 26
-*/
-
 const input = 265149;
+//const input = 23;
 
 var spiral = [];
 var xmax = 1;
@@ -19,6 +12,10 @@ var ymin = -1;
 var x = 0;
 var y = 0;
 
+const ms = Math.ceil(Math.sqrt(input));
+var spiral2 = [...Array(ms+10).keys()].map(i => Array(ms+10));
+
+spiral2[y+ms][x+ms] = 1;
 for(var i=1; i<=input;i++) {
     spiral.push({sq:i,x:x,y:y});
     d = direction(x,y);
@@ -32,6 +29,43 @@ for(var i=1; i<=input;i++) {
     }
 }
 console.log('It\'s ' + manh(spiral[0], spiral[input-1]) + ' steps to ' + input);
+
+// Part 2
+for(square of spiral) {
+    if(square.x == 0 && square.y == 0) {
+        spiral2[square.y+ms][square.x+ms] = 1;        
+    } else {
+        spiral2[square.y+ms][square.x+ms] = addNeighbors(square.x+ms,square.y+ms);
+    }
+    square.data = spiral2[square.y+ms][square.x+ms];
+    if(square.data > input) {
+        console.log('First larger number is: ' + square.data);
+        return;
+    }
+}
+/*
+for(var j=spiral2.length;j>=0;j--) {
+    console.log(spiral2[j]);
+}
+*/
+
+function addNeighbors(x,y) {
+    return data(y+1, x+0) +
+           data(y+1, x+1) +
+           data(y+0, x+1) +
+           data(y-1, x+1) +
+
+           data(y-1, x+0) +
+           data(y-1, x-1) +
+           data(y+0, x-1) +
+           data(y+1, x-1);           
+}
+
+function data(y,x) {
+    if (spiral2[y] == undefined) return 0;
+    d = spiral2[y][x];
+    return d==undefined?0:d;
+}
 
 function direction(x,y) {
     // TODO Clean this mess up
