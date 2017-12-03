@@ -2,8 +2,8 @@ var fs = require('fs');
 var args = process.argv.slice(2);
 
 const input = 265149;
-//const input = 23;
 
+// VM i globala variabler idag
 var spiral = [];
 var xmax = 1;
 var xmin = -1;
@@ -12,53 +12,45 @@ var ymin = -1;
 var x = 0;
 var y = 0;
 
+// ms för att slippa krångla med negativ array.
+// krånligt nog med 2d arrayer i javascript
 const ms = Math.ceil(Math.sqrt(input));
 var spiral2 = [...Array(ms+10).keys()].map(i => Array(ms+10));
-
-spiral2[y+ms][x+ms] = 1;
+var part2 = 0;
 for(var i=1; i<=input;i++) {
     spiral.push({sq:i,x:x,y:y});
+
+    // Part 2
+    var sum = 0;
+    if(x == 0 && y == 0) {
+        spiral2[y+ms][x+ms] = 1;        
+    } else if(part2 == 0) {
+        sum = addNeighbors(x+ms,y+ms);
+        spiral2[y+ms][x+ms] = sum;
+        if(sum > input) {
+            part2 = sum;
+        }
+    }
+
+    // Gå runt i spiralen
     d = direction(x,y);
     x += d[0];
     y += d[1];
     if(x == xmax && y == ymin) {
-        xmax++;
+        xmax++; 
         xmin--;
         ymin--;
         ymax++;
     }
 }
 console.log('It\'s ' + manh(spiral[0], spiral[input-1]) + ' steps to ' + input);
-
-// Part 2
-for(square of spiral) {
-    if(square.x == 0 && square.y == 0) {
-        spiral2[square.y+ms][square.x+ms] = 1;        
-    } else {
-        spiral2[square.y+ms][square.x+ms] = addNeighbors(square.x+ms,square.y+ms);
-    }
-    square.data = spiral2[square.y+ms][square.x+ms];
-    if(square.data > input) {
-        console.log('First larger number is: ' + square.data);
-        return;
-    }
-}
-/*
-for(var j=spiral2.length;j>=0;j--) {
-    console.log(spiral2[j]);
-}
-*/
+console.log('First larger number is: ' + part2);
 
 function addNeighbors(x,y) {
-    return data(y+1, x+0) +
-           data(y+1, x+1) +
-           data(y+0, x+1) +
-           data(y-1, x+1) +
-
-           data(y-1, x+0) +
-           data(y-1, x-1) +
-           data(y+0, x-1) +
-           data(y+1, x-1);           
+    return data(y+1, x+0) + data(y+1, x+1) +
+           data(y+0, x+1) + data(y-1, x+1) +
+           data(y-1, x+0) + data(y-1, x-1) +
+           data(y+0, x-1) + data(y+1, x-1);           
 }
 
 function data(y,x) {
