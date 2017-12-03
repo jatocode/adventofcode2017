@@ -31,24 +31,24 @@ for(var i=1; i<=input;i++) {
         ymax++;
     }
 }
-console.log('Its ' + manh(spiral[0], spiral[input-1]) + ' steps to ' + input);
+console.log('It\'s ' + manh(spiral[0], spiral[input-1]) + ' steps to ' + input);
 
 function direction(x,y) {
-    var dx = 0;
+    // TODO Clean this mess up
     if(x == xmax) {
-        if(y == ymin)  return [1,0]; // Next spiral 9 -> 10
-        if(y == ymax) return [-1,0]; // Go left 3 -> 4
-        return [0,1]; // Go upp 2 -> 3
-    } 
-    if(x == xmin) {
-        if(y == ymin)  return [1,0]; // Go right 7 - 8
-        if(y == ymax) return [0,-1]; // 5 - > 6
-        return [0,-1]; // Go down // 6 -> 7
+        if(y == ymin)  return [1,0]; // Right
+        if(y == ymax) return [-1,0]; // Left
+        return [0,1]; // Up
     }
-    if(y == ymin) return [1,0]; // Go right 1 -> 2
-    if(y == ymax) return [-1,0]; // Go left 4 -> 5
+    if(x == xmin) {
+        if(y == ymin)  return [1,0]; // Right
+        if(y == ymax) return [0,-1]; // Down
+        return [0,-1]; // Down
+    }
+    if(y == ymin) return [1,0]; // Right
+    if(y == ymax) return [-1,0]; // Left
 
-    return [1,0]; // Go right 8 -> 9
+    return [1,0]; // Right
 }
 
 // Calculate distance
