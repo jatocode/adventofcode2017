@@ -14,11 +14,10 @@ read(args[0], function(data) {
     var lines = data.split('\n');
     var numvalid1 = 0;
     var numvalid2 = 0;
-    var l1 = '';
-    var l2 = '';
     for(let l of lines) {
         if(l.length == 0) continue;
 
+        // Part 1 with regex, no need for this now with part 2, could do both at once..but I dont care
         var pass = l.split(/\s+/);
         var valid = false;
         for(p of pass) {
@@ -26,14 +25,12 @@ read(args[0], function(data) {
             var match = l.match(reg); 
             if(match.length > 1) {
                 valid = false;
-                l1 = '';
                 break;
             }
             valid = true;
         }
         if (valid) {
             numvalid1++;
-            l1 = l;
         }
 
         // Part 2
