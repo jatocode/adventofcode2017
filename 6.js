@@ -25,13 +25,14 @@ read(args[0], function(data) {
         for(var i=1;i<=max;i++) {
             blocks[(maxi + i) % blocks.length]++;
         }
-        //console.log(blocks);
+        newseen = blocks.toString();
+    } while(seen.indexOf(newseen) < 0);
 
-        newSeen = blocks.toString();
-    } while(seen.indexOf(newSeen) < 0);
-
+    // Part 1
     console.log('Part 1. Found loop at step: ' + steps);
 
-    console.log('Cycle of already seen is: ' + (seen.length));
+    // Part 2
+    var loopi = seen.indexOf(newseen);
+    console.log('Part 2, Size of loop is:' + (seen.length - loopi));
  });
 
