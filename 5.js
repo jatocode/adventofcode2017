@@ -14,7 +14,7 @@ read(args[0], function(data) {
     var maze = data.split('\n').map(x => { return parseInt(x)});
     var current = 0;
     var steps = 1;
-    while(steps < 500000) { // Hängslen & livrem
+    while(true) { 
         var jump = maze[current];
         if(current + jump >= maze.length) break;
         maze[current]++;
@@ -28,7 +28,7 @@ read(args[0], function(data) {
     var maze = data.split('\n').map(x => { return parseInt(x)});    
     var current = 0;
     var steps = 1;
-    while(steps < 100000000) { // Hängslen & livrem
+    while(true) { 
         var jump = maze[current];
         if(current + jump >= maze.length) break;
         if(jump >= 3) {
