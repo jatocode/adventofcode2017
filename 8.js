@@ -12,7 +12,6 @@ function read(file, callback) {
 
 read(args[0], function(data) {
     var lines = data.split('\n');
-    var program = [];
     // Usch vad fult med dubbla objekt. Hinner inte städa nu
     var regs = {};
     var regmax = {};
@@ -20,44 +19,27 @@ read(args[0], function(data) {
         if(l.length == 0) continue;
         var parse = l.match(/([a-z]+)\s+(inc|dec)\s+(-?\d+)\s+if\s+([a-z]+)\s(.*)\s(-?\d+)/);
         var op = '';
-        try {
-            switch(parse[2]) {
-                case 'inc': op = '+'; break;
-                case 'dec': op = '-'; break;
-            }
-
-            var inst = { reg: parse[1],
-                op: op,
-                amount: parse[3],
-                lvalue: parse[4],
-                cond: parse[5],
-                rvalue: parse[6]};
-
-            if(!regs[parse[1]]) regs[parse[1]] = 0;
-            if(!regs[parse[4]]) regs[parse[4]] = 0;
-            if(!regmax[parse[1]]) regmax[parse[1]] = 0;
-            if(!regmax[parse[4]]) regmax[parse[4]] = 0;
-        } catch (err) {
-            console.log(l);
-            console.log(err);
-            console.log(parse);
+        switch(parse[2]) {
+            case 'inc': op = '+'; break;
+            case 'dec': op = '-'; break;
         }
 
-        program.push(inst);
-    }
+        var i = { reg: parse[1], op: op, amount: parse[3],
+                  lvalue: parse[4], cond: parse[5], rvalue: parse[6]};
 
-    for(i of program) {
-        reg = i.reg;
+        if(!regs[parse[1]]) regs[parse[1]] = 0;
+        if(!regs[parse[4]]) regs[parse[4]] = 0;
+        if(!regmax[parse[1]]) regmax[parse[1]] = 0;
+        if(!regmax[parse[4]]) regmax[parse[4]] = 0;
 
         var evalstring = regs[i.lvalue] + ' ' + i.cond + ' ' + '(' + parseInt(i.rvalue) + ')';
         var condition = eval(evalstring);
-        //console.log(evalstring + ' = ' + condition);
 
         if(condition) {
-            var current = regs[reg];
+            var current = regs[i.reg];
             var evs = current + i.op + '(' + parseInt(i.amount) + ')';
-            regs[reg] = eval(evs);
-            if(regs[reg] > regmax[reg]) regmax[reg] = regs[reg];
+            regs[i.reg] = eval(evs);
+            if(regs[i.reg] > regmax[i.reg]) regmax[i.reg] = regs[i.reg];
         }
     }
 
