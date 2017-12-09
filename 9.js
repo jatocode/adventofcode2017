@@ -19,11 +19,13 @@ read(args[0], function (data) {
         var ignore = false;
         var groups = [];
         var level = 0;
+        var gc = 0;
         for(i=0; i < l.length ;i++) {
             if(ignore) {
                 i++;
                 ignore = false;
             }
+            if(garbage && !ignore) gc++;
             switch (l[i]) {
                 case '{':
                     if(!garbage) {
@@ -38,14 +40,18 @@ read(args[0], function (data) {
                     garbage=true;
                     break;
                 case '>':
+                    gc--;
                     garbage=false;
                     break;
                 case '!':
+                    gc--;
                     ignore=true;
                     break;
             }
         }
         var sum = groups.reduce((p,c) => { return p + c});
-        console.log('Sum of groups is :' + sum);
+        console.log('Part 1. Sum of groups is :' + sum);
+        console.log('Part 2. Number of garbage chars:' + gc);
+        
     }
 });
