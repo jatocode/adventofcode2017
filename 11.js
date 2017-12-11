@@ -15,7 +15,6 @@ read(args[0], function (data) {
     for(l of lines) {
         if(l.length == 0) continue;
         turns = l.split(',');
-//        console.log(turns);
         var path = [];
         var q = 0;
         var r = 0;
@@ -35,9 +34,19 @@ read(args[0], function (data) {
             path.push(hex);
         }
         var boy = path[path.length-1];
-        console.log('Steps to boy: ' + hex_distance(Hex(0,0), boy));
+        console.log('Steg till pojken: ' + hex_distance(Hex(0,0), boy));
+
+        // Steg 2, leta upp längsta kedjan
+        var max = 0;
+        for(hex of path) {
+            var d = hex_distance(Hex(0,0), hex);
+            if(d > max) max = d;
+        }
+        console.log('Längst bort var: ' + max);
     }
 });
+
+
 
 // Lärde mig allt från: https://www.redblobgames.com/grids/hexagons/
 
