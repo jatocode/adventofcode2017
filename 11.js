@@ -16,18 +16,11 @@ read(args[0], function (data) {
         if(l.length == 0) continue;
         turns = l.split(',');
         var path = [];
+        const dir = ['se','ne','n','nw','sw','s'];
+
         var hex = Hex(0,0);
         for(t of turns) {
-            var dir = 0;
-            switch(t) {
-                case 'n':  dir = 2; break;
-                case 'ne': dir = 1; break;
-                case 'se': dir = 0; break;
-                case 's':  dir = 5; break;
-                case 'sw': dir = 4; break;
-                case 'nw': dir = 3; break;
-            }
-            hex = hex_neighbor(hex, dir);
+            hex = hex_neighbor(hex, dir.indexOf(t));
             path.push(hex);
         }
         var boy = path[path.length-1];
