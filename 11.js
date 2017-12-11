@@ -16,9 +16,7 @@ read(args[0], function (data) {
         if(l.length == 0) continue;
         turns = l.split(',');
         var path = [];
-        var q = 0;
-        var r = 0;
-        var hex = Hex(q,r);
+        var hex = Hex(0,0);
         for(t of turns) {
             var dir = 0;
             switch(t) {
@@ -28,7 +26,6 @@ read(args[0], function (data) {
                 case 's':  dir = 5; break;
                 case 'sw': dir = 4; break;
                 case 'nw': dir = 3; break;
-                default: console.log(t); break;
             }
             hex = hex_neighbor(hex, dir);
             path.push(hex);
