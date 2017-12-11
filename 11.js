@@ -27,11 +27,7 @@ read(args[0], function (data) {
         console.log('Steg till pojken: ' + hex_distance(Hex(0,0), boy));
 
         // Steg 2, leta upp längsta kedjan
-        var max = 0;
-        for(hex of path) {
-            var d = hex_distance(Hex(0,0), hex);
-            if(d > max) max = d;
-        }
+        var max = Math.max(...path.map((hex) => { return hex_distance(Hex(0,0), hex); }));
         console.log('Längst bort var: ' + max);
     }
 });
