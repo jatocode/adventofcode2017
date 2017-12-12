@@ -46,7 +46,7 @@ read(args[0], function (data) {
 function bfs(start, map, conn) {
     var queue=[start];
     var pid;
-    var tested = [start];
+    var tested = [];
     while(queue.length>0) {
 
         pid = queue.shift();
