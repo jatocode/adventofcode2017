@@ -27,14 +27,23 @@ read(args[0], function (data) {
         map[i] = programs[i];
     }
 
-    var conn0 = [0];
-    bfs(0, map, conn0);
+    // Del 1:
+    var conn = [0];
+    bfs(0, map, conn);
+    console.log('Antal program i grupp 0 : ' + conn.length);
 
-    console.log('Antal program i grupp 0: ' + conn0.length);
+    // Del 2:
+    var groups = new Set();
+    for(gid in programs) {
+        var conn = [parseInt(gid)];
+        bfs(gid, map, conn);
+        groups.add(conn.sort().join()); // Sortera och bunta ihop
+    }
+    console.log('Antal grupper totalt: ' + groups.size);
 
 });
 
-function bfs(start, map, conn0) {
+function bfs(start, map, conn) {
     var queue=[start];
     var pid;
     var tested = [start];
@@ -50,8 +59,8 @@ function bfs(start, map, conn0) {
         for (var i = 0; i<p.ct.length; i++) {
             var cid = p.ct[i];
             // Om conn0 innehåller cid och p inte redan är med så lägg till p
-            if(conn0.indexOf(cid) >=0 && conn0.indexOf(p.id) < 0) {
-                conn0.push(p.id);
+            if(conn.indexOf(cid) >=0 && conn.indexOf(p.id) < 0) {
+                conn.push(p.id);
             }
 
             // Har vi sett den förut?
@@ -61,5 +70,5 @@ function bfs(start, map, conn0) {
             }
         }
     }
-    return conn0;
+    return conn;
 };
