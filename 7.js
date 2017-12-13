@@ -36,7 +36,6 @@ read(args[0], function (data) {
     let root = structure.find(p => p.below == null);
     console.log('Del 1. Längst ner är ' + (root.name));
     
-
     // Del 2
     let ub = hittaObalans(root);
     let nyvikt = map[ub.tower].weight + parseInt(ub.diff);
@@ -51,19 +50,18 @@ function hittaObalans(tower) {
     }
 
     var ovan = [];
-    var ovans = new Set();
+    var ovanset = new Set();
     for(let a of tower.above) {
         map[a].tw = hittaTotalVikt(map[a]);
-        ovan.push(map[a].tw );
-        ovans.add(map[a].tw );
+        ovan.push(map[a].tw);
+        ovanset.add(map[a].tw);
     }
-    if(ovans.size == 1) return null;
+    if(ovanset.size == 1) return null;
 
     // Ok, vi har hittat kandidater. Men vilken?
     for(a of tower.above) {
         let v2 = ovan.filter(f => f == map[a].tw);
         if(v2.length == 1) {
-            //console.log('Den här jäveln ' + JSON.stringify(map[a]));
             let syskon = tower.above[tower.above.indexOf(a) + 1 % tower.above.length];
             let diff = map[syskon].tw - map[a].tw;
             return {tower:a, diff:diff};
@@ -71,8 +69,9 @@ function hittaObalans(tower) {
     }
     return {};
 }
-function hittaTotalVikt(node) {
-    return node.weight + node.above.reduce((a,b) => a + hittaTotalVikt(map[b]),0)
+
+function hittaTotalVikt(tower) {
+    return tower.weight + tower.above.reduce((a,b) => a + hittaTotalVikt(map[b]),0)
 }
 
 function createTree(list) {
