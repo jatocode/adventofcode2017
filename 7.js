@@ -37,9 +37,12 @@ read(args[0], function (data) {
     console.log('Del 1. Längst ner är ' + (root.name));
     
     // Del 2
-    let ub = hittaObalans(root);
-    let nyvikt = map[ub.tower].weight + parseInt(ub.diff);
-    console.log('Del 2. Obalanserad är ' + ub.tower + ', borde väga ' + nyvikt);
+    let obalanserad = hittaObalans(root);
+    let skyldig = hittaSkyldig(obalanserad.above);
+    let nyvikt = map[skyldig.tower].weight + parseInt(skyldig.diff);
+    console.log('Del 2. Obalanserad är ' + skyldig.tower + ', borde väga ' + nyvikt);
+
+    // mfzpvpj, borde väga 596
 });
 
 function hittaObalans(tower) {
@@ -49,25 +52,30 @@ function hittaObalans(tower) {
         if(unbal) return unbal
     }
 
-    var ovan = [];
     var ovanset = new Set();
     for(let a of tower.above) {
         map[a].tw = hittaTotalVikt(map[a]);
-        ovan.push(map[a].tw);
         ovanset.add(map[a].tw);
     }
     if(ovanset.size == 1) return null;
 
+    // Vi hittade där obalansen börjar
+    return tower;
+}
+
+function hittaSkyldig(towers) {
     // Ok, vi har hittat kandidater. Men vilken?
-    for(a of tower.above) {
-        let v2 = ovan.filter(f => f == map[a].tw);
-        if(v2.length == 1) {
-            let syskon = tower.above[tower.above.indexOf(a) + 1 % tower.above.length];
+    let vikter = towers.map(t => { return map[t].tw });
+    for(a of towers) {
+        // Hur många andra har samma vikt?
+        let ensam = vikter.filter(f => f == map[a].tw);
+        if(ensam.length == 1) {
+            let syskon = towers[towers.indexOf(a) + 1 % towers.length];
             let diff = map[syskon].tw - map[a].tw;
             return {tower:a, diff:diff};
         }
     }
-    return {};
+    return {};    
 }
 
 function hittaTotalVikt(tower) {
