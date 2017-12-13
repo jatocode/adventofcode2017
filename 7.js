@@ -10,9 +10,10 @@ function read(file, callback) {
     });
 }
 
-var towerlist = [];
-var map = {};
+var map = {};    // Global lookup, får duga
+var structure;
 read(args[0], function (data) {
+    var towerlist = [];
     var lines = data.split('\n');
     for (let l of lines) {
         if (l.length == 0) continue;
@@ -20,117 +21,71 @@ read(args[0], function (data) {
         var above = tower[4] ? tower[4].split(', ') : [];
         var t = {
             name: tower[1],
-            weight: tower[2],
+            weight: parseInt(tower[2]),
             tw: 0,
-            below: [],
+            below: null,
             above: above,
         };
         towerlist.push(t);
+        map[t.name] = t;
     }
 
-    var program = createTree(towerlist);
+    structure = createTree(towerlist);
 
-    var root;
-    for (p of program) {
-        if (p.below.length == 0) {
-            console.log('The bottom is ' + p.name);
-            root = p;
-        }
-    }
-
-    //console.log(program);
-
-    // Gör en lookup. Global, men orka..
-    for (p of program) {
-        map[p.name] = p;
-    }
-
-    dfs(root, program, ((x) => { 
-        if(x.bal == true) {
-            console.log(x);
-        } 
-    }));
+    // Del 1
+    let root = structure.find(p => p.below == null);
+    console.log('Del 1. Längst ner är ' + (root.name));
     
+
+    // Del 2
+    let ub = hittaObalans(root);
+    let nyvikt = map[ub.tower].weight + parseInt(ub.diff);
+    console.log('Del 2. Obalanserad är ' + ub.tower + ', borde väga ' + nyvikt);
 });
 
-function findOdd(subtowers) {
-    //var list = subtowers.map((x) => { return 'a'+x.weight });
-    var list = subtowers;
-    if (list.length == 0) return false;
-    var count = {};
-    for (l of list) {
-        if (!count[l]) count[l] = 0;
-        count[l]++;
-    }
-    // Alla lika?
-    if (Object.values(count).length == 1) {
-        return true;
+function hittaObalans(tower) {
+    if(tower.above.length == 0) return null;
+    for(let a of tower.above) {
+        var unbal = hittaObalans(map[a]);
+        if(unbal) return unbal
     }
 
-    var min = Math.min(...Object.values(count));
-    var mini = Object.values(count).indexOf(min);
-    var key = parseInt(Object.keys(count)[mini]);
+    var ovan = [];
+    var ovans = new Set();
+    for(let a of tower.above) {
+        map[a].tw = hittaTotalVikt(map[a]);
+        ovan.push(map[a].tw );
+        ovans.add(map[a].tw );
+    }
+    if(ovans.size == 1) return null;
 
-    // Index på den minsta
-    return subtowers[list.indexOf(key)];
-}
-
-function totweight(tower) {
-    var tw = 0; //parseInt(tower.weight);
+    // Ok, vi har hittat kandidater. Men vilken?
     for(a of tower.above) {
-        tw += parseInt(map[a].weight) + totweight(map[a]);
-    }
-    return tw;
-}
-
-function balanced(tower) {
-    var alist = [];
-    var count = {};
-    for(a of tower.above) {
-        var w = parseInt(map[a].weight) + totweight(map[a]);
-        if (!count[w]) count[w] = 0;
-        count[w]++;
-    }
-    return (Object.values(count).length == 1);
-}
-
-function dfs(root, list, callback) {
-    var stack = [root];
-
-    var n;
-    while (stack.length > 0) {
-
-        n = stack.pop();
-        n.tw = parseInt(totweight(n)) + parseInt(n.weight);
-        n.bal = balanced(n);
-
-        callback(n);
-
-        if (!n.above) {
-            continue;
-        }
-
-        //console.log(n.bal);
-        for (var i = n.above.length - 1; i >= 0; i--) {
-            stack.push(map[n.above[i]]);
+        let v2 = ovan.filter(f => f == map[a].tw);
+        if(v2.length == 1) {
+            //console.log('Den här jäveln ' + JSON.stringify(map[a]));
+            let syskon = tower.above[tower.above.indexOf(a) + 1 % tower.above.length];
+            let diff = map[syskon].tw - map[a].tw;
+            return {tower:a, diff:diff};
         }
     }
-};
+    return {};
+}
+function hittaTotalVikt(node) {
+    return node.weight + node.above.reduce((a,b) => a + hittaTotalVikt(map[b]),0)
+}
 
 function createTree(list) {
     var tree = [];
-    // Gör en lookuptabell
-    var map = {};
-    for (l of list) {
-        map[l.name] = l;
-    }
 
-    // Lägg upp skiten i trädet
+    // Bygg trädet
     for (t of list) {
+        var tw = parseInt(t.weight);
         for (a of t.above) {
-            map[a].below.push(t.name);
+            map[a].below = t.name;
         }
         tree.push(map[t.name]);
     }
     return tree;
 };
+
