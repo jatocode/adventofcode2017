@@ -6,13 +6,9 @@ for(j=0;j<128;j++) {
     var key = input + '-'+j;
     kh = knothash(key, 256, 64);
 
-    var bits = [];
     for(i=0;i<kh.length;i+=2) {
         var bitarr = parseInt(kh.slice(i,i+2), 16).toString(2).split('');
-        bits.push(bitarr);
-    }
-    for(b of bits) {
-        sum += b.filter((x) => x == 1).length;
+        sum += bitarr.filter((x) => x == 1).length;
     }
 }
 console.log(sum + '  squares are used for ' + input);
