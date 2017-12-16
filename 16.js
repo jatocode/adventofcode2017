@@ -12,11 +12,8 @@ function read(file, callback) {
 var programs = 'abcdefghijklmnop'.split('');
 //var programs = 'abcde'.split('');
 read(args[0], function (data) {
-    console.log(programs);
     var commands = data.split(',');
-    var layers = [];
     for (l of commands) {
-        console.log(l);
         if (l.length == 0) continue;
         var match = l.match(/s(.*)/);
         if (match && match[1]) {
@@ -33,6 +30,7 @@ read(args[0], function (data) {
             partner(match[1], match[2]);
         }        
     }
+    console.log(programs.join(''));
 });
 
 function spin(x) {
