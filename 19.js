@@ -1,5 +1,4 @@
 const fs = require('fs');
-const spawn = require('threads').spawn;
 const args = process.argv.slice(2);
 
 function read(file, callback) {
@@ -19,9 +18,8 @@ read(args[0], function (data) {
         matrix.push(line.split(''));
     }
     var start = [matrix[0].indexOf('|'), 0, 0];
-    console.log(start);
-    var letters = dfs(start, ((x) => { /* console.log(x) */ }));
-    console.log(letters);
+    var result = dfs(start);
+    console.log('Texten är ' + result.text + ' och antal steg är ' + result.steps);
 });
 
 function dfs(start, callback) {
@@ -33,16 +31,12 @@ function dfs(start, callback) {
     path[getNode(start)] = [];
     steps = 0; 
     while (stack.length > 0) {
-
         n = stack.pop();
-        var r = getRoute(n);
-        
+        var r = getRoute(n);    
         const match = r.match(/[A-Z]/);
         if(match && match[0]) text += match[0];
 
-        dir = r=='+'?-1:n[2]; // Ändra bara kurs vid +
-
-        callback({r,n:n,dir:dir});
+        dir = r=='+'?-1:n[2]; // Ändra bara kurs vid +, annars kör på
         steps++; // Del 2
 
         var prev = path[getNode(n)];
@@ -51,8 +45,7 @@ function dfs(start, callback) {
             if(getNode(prev) == getNode(paths[i])) {
                     continue;
             }
-            const route = getRoute(paths[i]);
-            if(route != undefined && route != ' ') {
+            if(getRoute(paths[i]) != ' ') {
                 stack.push(paths[i]);
                 path[getNode(paths[i])] = n;
             }
@@ -64,8 +57,8 @@ function dfs(start, callback) {
 function getRoute(n) {
     const x = n[0];
     const y = n[1];
-    if(matrix[y]) return matrix[y][x];
-    return undefined;
+    if(!matrix[y] || !matrix[y][x]) return ' '
+    else return matrix[y][x];
 }
 
 function getNode(n) {
@@ -82,11 +75,8 @@ function getPaths(n, dir) {
                   [x, y-1, 0],
                   [x, y+1, 0] ];
 
-    if(dir == 0) 
-        return paths.slice(2);
-    else if (dir == 1) 
-        return paths.slice(0, 2);
-    else 
-        return paths;
+    if(dir == 0) return paths.slice(2);
+    else if (dir == 1)  return paths.slice(0, 2);
+    else return paths;
 }
 
