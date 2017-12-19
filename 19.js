@@ -31,6 +31,7 @@ function dfs(start, callback) {
     var path = {};
     var dir = 0;
     path[getNode(start)] = [];
+    steps = 0; 
     while (stack.length > 0) {
 
         n = stack.pop();
@@ -42,6 +43,7 @@ function dfs(start, callback) {
         dir = r=='+'?-1:n[2]; // Ändra bara kurs vid +
 
         callback({r,n:n,dir:dir});
+        steps++; // Del 2
 
         var prev = path[getNode(n)];
         var paths = getPaths(n, dir);
@@ -56,7 +58,7 @@ function dfs(start, callback) {
             }
         }
     }
-    return text;
+    return {text, steps};
 };
 
 function getRoute(n) {
