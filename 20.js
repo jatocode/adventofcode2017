@@ -31,12 +31,9 @@ read(args[0], function (data) {
 });
 
 function del2(particles) {
-    var zbuf = [];
-    var zcopy;
     for(let tick=0; tick<numticks; tick++) {
         // Update
         for(let i=0;i<particles.length;i++) {
-            if(!particles[i]) continue;
             particles[i].v.x += particles[i].a.x;
             particles[i].v.y += particles[i].a.y;
             particles[i].v.z += particles[i].a.z;
@@ -48,15 +45,12 @@ function del2(particles) {
         }
         // Collision check
         for(let i=0;i<particles.length;i++) {
-            if(!particles[i]) continue;
             var collisions = new Set();
             const p = particles[i].p;
             for(let j=0;j<particles.length;j++) {
-                if(j == i || !particles[j]) continue;
+                if(j == i) continue;
                 const p2 = particles[j].p;
-                if(p.x == p2.x && 
-                   p.y == p2.y && 
-                   p.z == p2.z) {
+                if(p.x == p2.x && p.y == p2.y && p.z == p2.z) {
                     collisions.add(i);
                     collisions.add(j);
                 }
