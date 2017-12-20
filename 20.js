@@ -10,7 +10,7 @@ function read(file, callback) {
     });
 }
 
-var numticks = args[1]?parseInt(args[1]):100000;
+var numticks = args[1]?parseInt(args[1]):1000;
 
 read(args[0], function (data) {
     var lines = data.split('\n');
@@ -27,8 +27,9 @@ read(args[0], function (data) {
         particles.push({p,v,a});
     }
 
-    var min = {pid: -1, dist:1000}; 
-    for(let ticks=0;ticks<numticks;ticks++) {
+    var zbuf = [];
+    var zcopy;
+    for(let tick=0; tick<numticks; tick++) {
         for(let i=0;i<particles.length;i++) {
             particles[i].v.x += particles[i].a.x;
             particles[i].v.y += particles[i].a.y;
@@ -39,11 +40,11 @@ read(args[0], function (data) {
             particles[i].p.z += particles[i].v.z;
 
             const dist = Math.abs(particles[i].p.x) + Math.abs(particles[i].p.y) + Math.abs(particles[i].p.z);
-            if(dist < min.dist) {
-                min.pid = i;
-                min.dist = dist;
-            }
+            zbuf[i] = {i:i, d:dist};
+            zcopy = zbuf.slice(0, zbuf.length);
+            zcopy.sort((a,b) => { return a.d - b.d });
         }
+        if(tick % 20 == 0) console.log('@ tick: ' + tick + ' : ' + zcopy[0].i + ', dist = ' + zcopy[0].d);
     }
-    console.log('After ' + numticks + ' ticks, closest particle is: ' + min.pid + ' distance to <0,0,0> is ' + min.dist);
+    console.log('Closest to <0,0,0> after ' + numticks + ' are ' + zcopy[0].i);
 });
