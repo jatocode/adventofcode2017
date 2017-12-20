@@ -26,7 +26,53 @@ read(args[0], function (data) {
 
         particles.push({p,v,a});
     }
+//    del1(particles);  // OBS, går inte att köra båda på rad, pga particles blir uppdaterad
+    del2(particles); 
+});
 
+function del2(particles) {
+    var zbuf = [];
+    var zcopy;
+    for(let tick=0; tick<numticks; tick++) {
+        // Update
+        for(let i=0;i<particles.length;i++) {
+            if(!particles[i]) continue;
+            particles[i].v.x += particles[i].a.x;
+            particles[i].v.y += particles[i].a.y;
+            particles[i].v.z += particles[i].a.z;
+
+            particles[i].p.x += particles[i].v.x;
+            particles[i].p.y += particles[i].v.y;
+            particles[i].p.z += particles[i].v.z;
+
+        }
+        // Collision check
+        for(let i=0;i<particles.length;i++) {
+            if(!particles[i]) continue;
+            var collisions = new Set();
+            const p = particles[i].p;
+            for(let j=0;j<particles.length;j++) {
+                if(j == i || !particles[j]) continue;
+                const p2 = particles[j].p;
+                if(p.x == p2.x && 
+                   p.y == p2.y && 
+                   p.z == p2.z) {
+                    collisions.add(i);
+                    collisions.add(j);
+                }
+            }
+
+            // Hitta på ett bättre sätt att ta bort element!!
+            for(c of Array.from(collisions)) {
+                particles[c] = undefined;
+            }
+            particles = particles.filter((x) => x);
+        }
+        if(tick % 20 == 0) console.log('@ tick: ' + tick + ' particles left = ' + particles.length);
+    }
+};
+
+function del1(particles) {
     var zbuf = [];
     var zcopy;
     for(let tick=0; tick<numticks; tick++) {
@@ -47,4 +93,4 @@ read(args[0], function (data) {
         if(tick % 20 == 0) console.log('@ tick: ' + tick + ' : ' + zcopy[0].i + ', dist = ' + zcopy[0].d);
     }
     console.log('Closest to <0,0,0> after ' + numticks + ' are ' + zcopy[0].i);
-});
+};
