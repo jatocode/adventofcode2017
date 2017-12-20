@@ -26,7 +26,7 @@ read(args[0], function (data) {
 
         particles.push({p,v,a});
     }
-//    del1(particles);  // OBS, går inte att köra båda på rad, pga particles blir uppdaterad
+    //del1(particles);  // OBS, går inte att köra båda på rad, pga particles blir uppdaterad
     del2(particles); 
 });
 
@@ -68,7 +68,6 @@ function del2(particles) {
 
 function del1(particles) {
     var zbuf = [];
-    var zcopy;
     for(let tick=0; tick<numticks; tick++) {
         for(let i=0;i<particles.length;i++) {
             particles[i].v.x += particles[i].a.x;
@@ -81,10 +80,9 @@ function del1(particles) {
 
             const dist = Math.abs(particles[i].p.x) + Math.abs(particles[i].p.y) + Math.abs(particles[i].p.z);
             zbuf[i] = {i:i, d:dist};
-            zcopy = zbuf.slice(0, zbuf.length);
-            zcopy.sort((a,b) => { return a.d - b.d });
         }
-        if(tick % 20 == 0) console.log('@ tick: ' + tick + ' : ' + zcopy[0].i + ', dist = ' + zcopy[0].d);
     }
-    console.log('Closest to <0,0,0> after ' + numticks + ' are ' + zcopy[0].i);
+
+    zbuf.sort((a,b) => { return a.d - b.d });
+    console.log('Closest to <0,0,0> after ' + numticks + ' are ' + zbuf[0].i);
 };
