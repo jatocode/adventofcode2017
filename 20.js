@@ -34,6 +34,7 @@ function del2(particles) {
     for(let tick=0; tick<numticks; tick++) {
         // Update
         for(let i=0;i<particles.length;i++) {
+            if(!particles[i]) continue;
             particles[i].v.x += particles[i].a.x;
             particles[i].v.y += particles[i].a.y;
             particles[i].v.z += particles[i].a.z;
@@ -45,10 +46,11 @@ function del2(particles) {
         }
         // Collision check
         for(let i=0;i<particles.length;i++) {
+            if(!particles[i]) continue;
             var collisions = new Set();
             const p = particles[i].p;
             for(let j=0;j<particles.length;j++) {
-                if(j == i) continue;
+                if(!particles[j] || j == i) continue;
                 const p2 = particles[j].p;
                 if(p.x == p2.x && p.y == p2.y && p.z == p2.z) {
                     collisions.add(i);
@@ -56,14 +58,13 @@ function del2(particles) {
                 }
             }
 
-            // Hitta på ett bättre sätt att ta bort element!!
             for(c of Array.from(collisions)) {
                 particles[c] = undefined;
             }
-            particles = particles.filter((x) => x);
         }
-        if(tick % 20 == 0) console.log('@ tick: ' + tick + ' particles left = ' + particles.length);
     }
+    particles = particles.filter((x) => x);
+    console.log('Del 2, partiklar kvar = ' + particles.length);
 };
 
 function del1(particles) {
