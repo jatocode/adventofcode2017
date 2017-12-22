@@ -1,0 +1,23 @@
+{
+  "name": "adventofcode2017",
+  "version": "1.0.0",
+  "description": "Dags år igen. Javascript pga gillar det och kanske C# pga bra för jobbets skull.",
+  "main": "1.js",
+  "dependencies": {
+    "threads": "^0.10.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jatocode/adventofcode2017.git"
+  },
+  "author": "Tobias Jansson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jatocode/adventofcode2017/issues"
+  },
+  "homepage": "https://github.com/jatocode/adventofcode2017#readme"
+}
