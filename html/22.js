@@ -8,7 +8,7 @@ fetch('/aoc2017/22-input')
 var grid = [];
 var infected = 0;
 var facing = 0;
-var GRIDSIZE = 40;
+var GRIDSIZE = 50;
 var loops = 10000;
 
 function run22(data) {
@@ -46,28 +46,39 @@ function drawloop(pos) {
     const newpos = burst(x, y);
     pos[0] = newpos[0];
     pos[1] = newpos[1];
-    console.log(loops);
     if (loops-- > 0) setTimeout(function () { drawloop(pos); }, 10);
 }
 
-function isInfected(x, y) {
+function fixgrid(x, y) {
     if (grid[y] == undefined) {
         grid[y] = [];
         grid[y][x] = '.';
-        return false;
     }
-    return grid[y][x] == '#';
 }
 
 function burst(x, y) {
-    if (isInfected(x, y)) {
-        grid[y][x] = '.'; // Clean it
-        dir = 'r';
-    } else {
-        grid[y][x] = '#'; // Infect!
-        infected++;
-        dir = 'l';
+    fixgrid(x, y);
+
+    switch (grid[y][x]) {
+        case '.':
+            grid[y][x] = 'W';
+            dir = 'l';
+            break;
+        case 'W':
+            grid[y][x] = '#';
+            infected++;
+            dir = 's';
+            break;
+        case '#':
+            grid[y][x] = 'F';
+            dir = 'r';
+            break;
+        case 'F':
+            grid[y][x] = '.';
+            dir = 'R'; // Reverse
+            break;
     }
+
     const delta = move(x, y, dir);
     x += delta[0];
     y += delta[1];
@@ -83,18 +94,37 @@ function move(x, y, direction) {
         case 'l':
             facing--;
             break;
+        case 'R':
+            facing += 2;
+            break;
+        case 's':
+            break;
     }
     facing = (facing % dirs.length + dirs.length) % dirs.length;
     return dirs[facing];
 }
 
 function printgrid(pos) {
-    var GRIDSIZE = 40;
+    var GRIDSIZE = 50;
     for (let yi = -GRIDSIZE; yi < GRIDSIZE; yi++) {
         const y = grid[yi];
         for (let xi = -GRIDSIZE; xi < GRIDSIZE; xi++) {
-            if(y[xi] == '#') {
-                print(xi + GRIDSIZE, yi + GRIDSIZE, 'black');
+            switch (y[xi]) {
+                case '#':
+                    print(xi + GRIDSIZE, yi + GRIDSIZE, 'red');
+                    break;
+                case 'W':
+                    print(xi + GRIDSIZE, yi + GRIDSIZE, 'black');
+                    break;
+                case 'F':
+                    print(xi + GRIDSIZE, yi + GRIDSIZE, 'green');
+                    break;
+                case '.':
+                    //print(xi + GRIDSIZE, yi + GRIDSIZE, 'lightgrey');
+                    break;
+                default:
+                    print(xi + GRIDSIZE, yi + GRIDSIZE, 'yellow');
+                    break;
             }
         }
     }
@@ -102,6 +132,6 @@ function printgrid(pos) {
 
 function print(x, y, mark) {
     ctx.fillStyle = mark;
-    ctx.fillRect(x*10, y*10, 8, 8);
+    ctx.fillRect(x * 10, y * 10, 8, 8);
     ctx.stroke();
 }
