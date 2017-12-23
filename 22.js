@@ -9,30 +9,39 @@ function read(file, callback) {
         callback(data);
     });
 }
+const GRIDSIZE = 40;
 
 var grid = [];
 var infected = 0;
 var facing = 0;
+for(i=-GRIDSIZE;i<GRIDSIZE;i++) {
+    grid[i] = [];
+    for(j=-GRIDSIZE;j<GRIDSIZE;j++) {
+        grid[i][j] = '.';
+    }
+}
 read(args[0], function (data) {
     var lines = data.split('\n');
+    var j=0;
+    var w=0;
     for(line of lines) {
         if(line.length == 0) continue;
-        grid.push(line.split(''));
+        w = line.length;
+        for(i=0; i < line.length;i++) {
+            grid[j][i] = line[i];
+        }
+        j++;
     }
-    const pos = [Math.floor(grid.length/2), Math.floor(grid[0].length/2)];
-    printgrid(pos);
-    for(let i=0; i<70; i++) {
+    const pos = [Math.floor(j/2), Math.floor(w/2)];
+    for(let i=0; i<10000; i++) {
         var x = pos[0];
         var y = pos[1];
-
         const newpos = burst(x,y);
-
         pos[0] = newpos[0];
         pos[1] = newpos[1];
-
-        printgrid(pos);
     }
-
+    printgrid(pos);
+    console.log('Infected: ' + infected);
 });
 
 function isInfected(x,y) {
@@ -46,7 +55,6 @@ function isInfected(x,y) {
 }
 
 function burst(x,y) {
-    //   console.log({x,y});
     if(isInfected(x,y)) {
         grid[y][x] = '.'; // Clean it
         dir = 'r';
@@ -72,7 +80,6 @@ function move(x,y, direction) {
             break;
     }
     facing = (facing % dirs.length + dirs.length) % dirs.length;
-    //    console.log(dirs[facing]);
     return dirs[facing];
 }
 
@@ -81,13 +88,13 @@ function printgrid(pos) {
     for(yi in grid) {
         min = yi < min?yi:min;
     }
-    for(let yi=min; yi<grid.length; yi++) {
+    for(let yi=-GRIDSIZE; yi<GRIDSIZE; yi++) {
         const y = grid[yi];
         var min = 0;
-        for(x in y.sort()) {
-            if(pos && pos[0] == x && pos[1] == yi) process.stdout.write('['); else process.stdout.write(' ');
-            process.stdout.write(y[x]);
-            if(pos && pos[0] == x && pos[1] == yi) process.stdout.write(']'); else process.stdout.write(' ');
+        for(let xi=-GRIDSIZE;xi<GRIDSIZE; xi++) {
+            if(pos && pos[0] == xi && pos[1] == yi) process.stdout.write('['); else process.stdout.write(' ');
+            process.stdout.write(y[xi]);
+            if(pos && pos[0] == xi && pos[1] == yi) process.stdout.write(']'); else process.stdout.write(' ');
         }
         process.stdout.write('\n');
     }
