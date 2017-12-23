@@ -35,7 +35,7 @@ function del2(particles) {
     // Update
     for(let i=0;i<particles.length;i++) {
         if(!particles[i]) continue;
-        print(particles[i].p.x, particles[i].p.y, 'white');
+        print(particles[i].p.x, particles[i].p.y, 2, 'white');
         particles[i].v.x += particles[i].a.x;
         particles[i].v.y += particles[i].a.y;
         particles[i].v.z += particles[i].a.z;
@@ -54,7 +54,7 @@ function del2(particles) {
             if(!particles[j] || j == i) continue;
             const p2 = particles[j].p;
             if(p.x == p2.x && p.y == p2.y && p.z == p2.z) {
-                print(particles[i].p.x, particles[i].p.y, 'red');
+                print(particles[i].p.x, particles[i].p.y, 2, 'red');
                 collisions.add(i);
                 collisions.add(j);
             }
@@ -88,8 +88,8 @@ function del1(particles) {
     console.log('Closest to <0,0,0> after ' + numticks + ' are ' + zbuf[0].i);
 };
 
-function print(x,y, mark) {
+function print(x,y, size, mark) {
     ctx.fillStyle = mark;
-    ctx.fillRect(x,y,2,2);
+    ctx.fillRect(x,y,size,size);
     ctx.stroke();
 }
