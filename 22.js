@@ -9,74 +9,90 @@ function read(file, callback) {
         callback(data);
     });
 }
-const GRIDSIZE = 40;
+const GRIDSIZE = 1000;
+const BURSTS = 10000000;
 
 var grid = [];
 var infected = 0;
 var facing = 0;
-for(i=-GRIDSIZE;i<GRIDSIZE;i++) {
+for (i = -GRIDSIZE; i < GRIDSIZE; i++) {
     grid[i] = [];
-    for(j=-GRIDSIZE;j<GRIDSIZE;j++) {
+    for (j = -GRIDSIZE; j < GRIDSIZE; j++) {
         grid[i][j] = '.';
     }
 }
 read(args[0], function (data) {
     var lines = data.split('\n');
-    var j=0;
-    var w=0;
-    for(line of lines) {
-        if(line.length == 0) continue;
+    var j = 0;
+    var w = 0;
+    for (line of lines) {
+        if (line.length == 0) continue;
         w = line.length;
-        for(i=0; i < line.length;i++) {
+        for (i = 0; i < line.length; i++) {
             grid[j][i] = line[i];
         }
         j++;
     }
-    const pos = [Math.floor(j/2), Math.floor(w/2)];
-    for(let i=0; i<10000; i++) {
+    const pos = [Math.floor(j / 2), Math.floor(w / 2)];
+    for (let i = 0; i < BURSTS; i++) {
         var x = pos[0];
         var y = pos[1];
-        const newpos = burst(x,y);
+        const newpos = burst(x, y);
         pos[0] = newpos[0];
         pos[1] = newpos[1];
     }
-    printgrid(pos);
     console.log('Infected: ' + infected);
 });
 
-function isInfected(x,y) {
-    if(grid[y] == undefined) {
-        console.log(y);
+function fixgrid(x, y) {
+    if (grid[y] == undefined) {
         grid[y] = [];
         grid[y][x] = '.';
-        return false;
     }
-    return grid[y][x] == '#';
 }
 
-function burst(x,y) {
-    if(isInfected(x,y)) {
-        grid[y][x] = '.'; // Clean it
-        dir = 'r';
-    } else {
-        grid[y][x] = '#'; // Infect!
-        infected++;
-        dir = 'l';
+function burst(x, y) {
+    fixgrid(x, y);
+
+    switch (grid[y][x]) {
+        case '.':
+            grid[y][x] = 'W';
+            dir = 'l';
+            break;
+        case 'W':
+            grid[y][x] = '#';
+            infected++;
+            dir = 's';
+            break;
+        case '#':
+            grid[y][x] = 'F';
+            dir = 'r';
+            break;
+        case 'F':
+            grid[y][x] = '.';
+            dir = 'R'; // Reverse
+            break;
     }
-    const delta = move(x,y, dir);
+
+    const delta = move(x, y, dir);
     x += delta[0];
     y += delta[1];
-    return [x,y];
+    return [x, y];
 }
 
-function move(x,y, direction) {
-    const dirs = [ [0,-1], [1,0], [0,1], [-1,0] ];
-    switch(direction) {
+function move(x, y, direction) {
+    const dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+    switch (direction) {
         case 'r':
             facing++;
             break;
         case 'l':
             facing--;
+            break;
+        case 'R':
+            facing += 2;
+            break;
+        case 's':
             break;
     }
     facing = (facing % dirs.length + dirs.length) % dirs.length;
@@ -85,16 +101,16 @@ function move(x,y, direction) {
 
 function printgrid(pos) {
     var min = 0;
-    for(yi in grid) {
-        min = yi < min?yi:min;
+    for (yi in grid) {
+        min = yi < min ? yi : min;
     }
-    for(let yi=-GRIDSIZE; yi<GRIDSIZE; yi++) {
+    for (let yi = -GRIDSIZE; yi < GRIDSIZE; yi++) {
         const y = grid[yi];
         var min = 0;
-        for(let xi=-GRIDSIZE;xi<GRIDSIZE; xi++) {
-            if(pos && pos[0] == xi && pos[1] == yi) process.stdout.write('['); else process.stdout.write(' ');
+        for (let xi = -GRIDSIZE; xi < GRIDSIZE; xi++) {
+            if (pos && pos[0] == xi && pos[1] == yi) process.stdout.write('['); else process.stdout.write(' ');
             process.stdout.write(y[xi]);
-            if(pos && pos[0] == xi && pos[1] == yi) process.stdout.write(']'); else process.stdout.write(' ');
+            if (pos && pos[0] == xi && pos[1] == yi) process.stdout.write(']'); else process.stdout.write(' ');
         }
         process.stdout.write('\n');
     }
