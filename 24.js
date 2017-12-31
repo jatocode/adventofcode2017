@@ -65,37 +65,3 @@ function andraport(component, port) {
     if(component.a == port) return component.b;
     return component.a;
 }
-
-function bfs(start, ports) {
-    let queue = [start];
-    let n;
-    let visited = [];
-    const numports = Object.keys(ports).length;
-    let came_from = {};
-    came_from[start] = -1;
-    let strength = ports[start].ts;
-
-    while (queue.length > 0) {
-        n = queue.shift();
-
-        if (visited.indexOf(n) != -1) {
-            continue;
-        }
-        visited.push(n);
-
-        for (let i = 0; i < numports; i++) {
-            if (visited.indexOf(i) == -1) {
-                const port0 = ports[i].port[0];
-                const port1 = ports[i].port[1];
-                if (port0 == 0 || port1 == 0) continue;
-                if (n != i && (ports[n].port.indexOf(port0) != -1 ||
-                    ports[n].port.indexOf(port1) != -1)) {
-                    queue.push(i);
-                    came_from[i] = n;
-                }
-            }
-        }
-    }
-    return { path: Object.keys(came_from), came_from, visited };
-};
-
