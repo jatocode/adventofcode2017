@@ -14,33 +14,38 @@ function read(file, callback) {
 read(args[0], function (data) {
     var lines = data.split('\n');
     let components = [];
-    var map = {};
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         if (line.length == 0) continue;
         const match = line.match(/(\d+)\/(\d+)/);
-        map[i] = {
-            port: [match[1], match[2]],
-            ts: +match[1] + +match[2]
-        };
-        let comp = {a:+match[1], b:+match[2]};
+        let comp = {i:i, a:+match[1], b:+match[2]};
         components.push(comp);
     }
 
-    let bridges = byggbryggor({ strength: 0, path: [] }, components, 0);
+    let bridges = byggbryggor({ strength: 0, path: [], length: 0 }, components, 0);
     let sorterat = bridges.sort((a,b) => b.strength - a.strength);
-    console.log('Starkaste bryggan: ' + sorterat[0].strength);
+    console.log('Del 1, starkaste bryggan: ' + sorterat[0].strength);
+
+    // Del 2, hitta längsta bryggorna
+    sorterat = bridges.sort((a,b) => b.length - a.length);
+    // Hitta max
+    let maxlen = sorterat[0].length;
+    // Filtrera ut med samma max och sortera igen
+    sorterat = bridges.filter(a => a.length == maxlen).sort((a,b) => b.strength - a.strength);
+    console.log('Del 2, längsta bryggan: ' + sorterat[0].length + ' har styrkan: ' + sorterat[0].strength);
+
 });
 
-function byggbryggor(bridge, components, port, alla) {
+function byggbryggor(bridge, components, port) {
     let bryggor = [];
 
     for (let i = 0; i < components.length; i++) {
         if (components[i].a == port || components[i].b == port) {
             let nybrygga = {
                 strength: bridge.strength + components[i].a + components[i].b,
-                path: bridge.path.concat(i)
+                path: bridge.path.concat(components[i].i),
             };
+            nybrygga.length = nybrygga.path.length;
 
             bryggor.push(nybrygga);
 
