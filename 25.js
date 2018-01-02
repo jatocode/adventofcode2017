@@ -15,6 +15,8 @@ read(args[0], function (data) {
     var lines = data.split('\n');
     let state = '';
     let diagnostic = 0;
+    
+    // Jag parsar input, kanske onödigt men gillar att vara konsekvent
     for (let i = 0; i < 3; i++) {
         const line = lines[i];
         if (line.length == 0) continue;
@@ -52,9 +54,8 @@ read(args[0], function (data) {
             newstate = match[1];
             let cvlogic1 = {wv:wv, step:step, newstate:newstate};
 
-            let logic = {state: state, cv: [cvlogic0, cvlogic1]};
-
             states[state] = [cvlogic0, cvlogic1];
+            i+=8;
         }
     }
 
@@ -72,7 +73,8 @@ read(args[0], function (data) {
 
     let ones = Object.values(tape).filter(x => x == 1);
 
-    console.log('There are ' + ones.length + ' ones after ' + diagnostic + ' steps');
+    console.log('Del 1: Det är ' + ones.length + ' ettor efter ' + diagnostic + ' steg');
+    console.log('Del 2: Kräver 50 stjärnor..');
 
 });
 
