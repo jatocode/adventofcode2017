@@ -58,31 +58,21 @@ read(args[0], function (data) {
         }
     }
 
-    // Create "infinity" tape
-    const tapesize = 10000;
-    let tape = [];
-    for(let i=-tapesize; i<tapesize;i++) {
-        tape[i] = 0;
-    }
+    let tape = {};
     let cursor = 0;
 
     // Run machine
     for(let i=0;i<diagnostic;i++) {
-        let cv = tape[cursor];
+        let cv = tape[cursor] ? tape[cursor] : 0;
         let logic = states[state][cv];
-
         tape[cursor] = logic.wv;
         cursor += logic.step;
         state = logic.newstate;
-        
     }
 
-    let ones = 0;
-    for(let i=-tapesize; i<tapesize;i++) {
-        if(tape[i] == 1) ones++;
-    }
+    let ones = Object.values(tape).filter(x => x == 1);
 
-    console.log('There are ' + ones + ' ones after ' + diagnostic + ' steps');
+    console.log('There are ' + ones.length + ' ones after ' + diagnostic + ' steps');
 
 });
 
